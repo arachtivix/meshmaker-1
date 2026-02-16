@@ -105,6 +105,27 @@ pytest tests/test_visual.py
 
 Visual test output is saved to `visual_tests_output/` directory.
 
+## Continuous Integration and GitHub Pages
+
+This project uses GitHub Actions to automatically run tests and deploy example outputs to GitHub Pages whenever changes are pushed to the main branch.
+
+### Workflow Overview
+
+The CI/CD workflow (`.github/workflows/ci-and-deploy.yml`) performs the following steps:
+
+1. **Run Tests**: Executes all unit tests and visual tests using pytest
+2. **Generate Example**: Runs `example.py` to create the house model
+3. **Deploy to Pages**: Publishes the generated 3D model and visualizations to GitHub Pages
+
+### Viewing the Output
+
+Once deployed, you can view the example output at: `https://arachtivix.github.io/meshmaker-1/`
+
+The GitHub Pages site includes:
+- Interactive gallery of visual test outputs
+- Downloadable 3D model file (OBJ format)
+- Documentation about the project
+
 ## Project Structure
 
 ```
