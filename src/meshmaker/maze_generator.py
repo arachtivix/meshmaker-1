@@ -101,6 +101,9 @@ class MazeGenerator:
         
         Returns:
             List of (x, y) coordinates representing the solution path
+            
+        Raises:
+            RuntimeError: If no solution path is found (should not happen with proper generation)
         """
         from collections import deque
         
@@ -128,7 +131,7 @@ class MazeGenerator:
                     visited.add((nx, ny))
                     queue.append(((nx, ny), path + [(nx, ny)]))
         
-        return []  # No solution found (shouldn't happen with proper generation)
+        raise RuntimeError("No solution path found - maze generation failed")
     
     def to_cube_grid(self, include_solution: bool = False) -> CubeGrid:
         """
