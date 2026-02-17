@@ -125,6 +125,10 @@ def calculate_openness_score(position, occupied_positions):
     Higher score means more open (fewer nearby cubes).
     This helps favor more open, branching shapes.
     
+    Note: This function checks a 5x5x5 neighborhood for each candidate position,
+    which is acceptable for small shapes (50-100 cubes) but could be optimized
+    for larger structures using spatial data structures if needed.
+    
     Args:
         position: (x, y, z) tuple
         occupied_positions: Set of occupied positions
@@ -149,7 +153,7 @@ def calculate_openness_score(position, occupied_positions):
     return 100 - nearby_count
 
 
-def grow_organic_shape(num_cubes, seed=None, openness_bias=0.7):
+def grow_organic_shape(num_cubes, seed=None, openness_bias=0.7, top_choices_fraction=0.3):
     """
     Grow an organic shape by adding cubes according to rules.
     
@@ -159,6 +163,9 @@ def grow_organic_shape(num_cubes, seed=None, openness_bias=0.7):
         openness_bias: Probability (0-1) of choosing more open positions.
                       Higher values favor more open, branching shapes.
                       Lower values create more compact shapes.
+        top_choices_fraction: When using openness bias, randomly select from the
+                             top fraction of most open positions (0-1).
+                             Default 0.3 means top 30% of positions.
     
     Returns:
         Set of occupied positions
@@ -189,8 +196,8 @@ def grow_organic_shape(num_cubes, seed=None, openness_bias=0.7):
             ]
             # Sort by score (descending) and pick from top choices
             scored_positions.sort(key=lambda x: x[1], reverse=True)
-            # Pick randomly from top 30% to maintain variety
-            top_count = max(1, len(scored_positions) // 3)
+            # Pick randomly from top fraction to maintain variety
+            top_count = max(1, int(len(scored_positions) * top_choices_fraction))
             chosen_pos = random.choice([p for p, s in scored_positions[:top_count]])
         else:
             # Random choice
