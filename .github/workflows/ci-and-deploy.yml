@@ -159,6 +159,23 @@ jobs:
                     margin-top: 10px;
                     color: #333;
                 }
+                .error-placeholder {
+                    background-color: #ffebee;
+                    border: 2px dashed #f44336;
+                    padding: 40px 20px;
+                    text-align: center;
+                    color: #c62828;
+                    border-radius: 4px;
+                    font-size: 0.9em;
+                }
+                .empty-gallery {
+                    background-color: #fff3cd;
+                    border: 2px solid #ffc107;
+                    padding: 20px;
+                    border-radius: 8px;
+                    text-align: center;
+                    margin: 20px 0;
+                }
                 footer {
                     margin-top: 40px;
                     padding-top: 20px;
@@ -243,6 +260,40 @@ jobs:
                 // Set update time
                 document.getElementById('update-time').textContent = new Date().toLocaleString();
                 
+                // Helper function to create gallery item with error handling
+                function createGalleryItem(container, name, file, description, folder) {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    
+                    const title = document.createElement('h3');
+                    title.textContent = name;
+                    
+                    const img = document.createElement('img');
+                    img.src = `${folder}/${file}`;
+                    img.alt = name;
+                    img.onload = function() {
+                        console.log(`✓ Successfully loaded: ${folder}/${file}`);
+                    };
+                    img.onerror = function() {
+                        console.error(`✗ Failed to load: ${folder}/${file}`);
+                        this.style.display = 'none';
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'error-placeholder';
+                        errorDiv.innerHTML = `<strong>⚠️ Image Failed to Load</strong><br><small>${folder}/${file}</small>`;
+                        item.insertBefore(errorDiv, title);
+                    };
+                    
+                    const desc = document.createElement('p');
+                    desc.textContent = description;
+                    desc.style.fontSize = '0.9em';
+                    desc.style.color = '#666';
+                    
+                    item.appendChild(img);
+                    item.appendChild(title);
+                    item.appendChild(desc);
+                    container.appendChild(item);
+                }
+                
                 // Define Blender rendered images
                 const blenderRenders = [
                     { name: 'House Structure', file: 'house_render.png', description: 'House-like structure with colored cubes rendered with Blender lighting' },
@@ -254,29 +305,18 @@ jobs:
                 // Create Blender render gallery items
                 const blenderGallery = document.getElementById('blender-gallery');
                 blenderRenders.forEach(render => {
-                    const item = document.createElement('div');
-                    item.className = 'gallery-item';
-                    
-                    const img = document.createElement('img');
-                    img.src = `blender_renders/${render.file}`;
-                    img.alt = render.name;
-                    img.onerror = function() {
-                        this.parentElement.style.display = 'none';
-                    };
-                    
-                    const title = document.createElement('h3');
-                    title.textContent = render.name;
-                    
-                    const desc = document.createElement('p');
-                    desc.textContent = render.description;
-                    desc.style.fontSize = '0.9em';
-                    desc.style.color = '#666';
-                    
-                    item.appendChild(img);
-                    item.appendChild(title);
-                    item.appendChild(desc);
-                    blenderGallery.appendChild(item);
+                    createGalleryItem(blenderGallery, render.name, render.file, render.description, 'blender_renders');
                 });
+                
+                // Check if Blender gallery is empty after image load attempts
+                setTimeout(() => {
+                    if (blenderGallery.children.length === 0) {
+                        const emptyMsg = document.createElement('div');
+                        emptyMsg.className = 'empty-gallery';
+                        emptyMsg.textContent = '⚠️ No Blender renders found. This may indicate an issue with the build process.';
+                        blenderGallery.appendChild(emptyMsg);
+                    }
+                }, 2000);
                 
                 // Define visual test images
                 const visualTests = [
@@ -287,32 +327,21 @@ jobs:
                     { name: 'Maze with Solution', file: 'maze_with_solution.png', description: '9x9 solvable maze with blue walls and yellow solution path' }
                 ];
                 
-                // Create gallery items
+                // Create visual test gallery items
                 const gallery = document.getElementById('gallery');
                 visualTests.forEach(test => {
-                    const item = document.createElement('div');
-                    item.className = 'gallery-item';
-                    
-                    const img = document.createElement('img');
-                    img.src = `visual_tests_output/${test.file}`;
-                    img.alt = test.name;
-                    img.onerror = function() {
-                        this.parentElement.style.display = 'none';
-                    };
-                    
-                    const title = document.createElement('h3');
-                    title.textContent = test.name;
-                    
-                    const desc = document.createElement('p');
-                    desc.textContent = test.description;
-                    desc.style.fontSize = '0.9em';
-                    desc.style.color = '#666';
-                    
-                    item.appendChild(img);
-                    item.appendChild(title);
-                    item.appendChild(desc);
-                    gallery.appendChild(item);
+                    createGalleryItem(gallery, test.name, test.file, test.description, 'visual_tests_output');
                 });
+                
+                // Check if visual test gallery is empty after image load attempts
+                setTimeout(() => {
+                    if (gallery.children.length === 0) {
+                        const emptyMsg = document.createElement('div');
+                        emptyMsg.className = 'empty-gallery';
+                        emptyMsg.textContent = '⚠️ No visual test outputs found. This may indicate an issue with the build process.';
+                        gallery.appendChild(emptyMsg);
+                    }
+                }, 2000);
             </script>
         </body>
         </html>
