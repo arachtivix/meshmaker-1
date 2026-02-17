@@ -260,8 +260,11 @@ jobs:
                 // Set update time
                 document.getElementById('update-time').textContent = new Date().toLocaleString();
                 
+                // Track loading statistics
+                const loadStats = { blender: { total: 0, loaded: 0 }, visual: { total: 0, loaded: 0 } };
+                
                 // Helper function to create gallery item with error handling
-                function createGalleryItem(container, name, file, description, folder) {
+                function createGalleryItem(container, name, file, description, folder, statCategory) {
                     const item = document.createElement('div');
                     item.className = 'gallery-item';
                     
@@ -273,6 +276,7 @@ jobs:
                     img.alt = name;
                     img.onload = function() {
                         console.log(`✓ Successfully loaded: ${folder}/${file}`);
+                        loadStats[statCategory].loaded++;
                     };
                     img.onerror = function() {
                         console.error(`✗ Failed to load: ${folder}/${file}`);
@@ -304,19 +308,21 @@ jobs:
                 
                 // Create Blender render gallery items
                 const blenderGallery = document.getElementById('blender-gallery');
+                loadStats.blender.total = blenderRenders.length;
                 blenderRenders.forEach(render => {
-                    createGalleryItem(blenderGallery, render.name, render.file, render.description, 'blender_renders');
+                    createGalleryItem(blenderGallery, render.name, render.file, render.description, 'blender_renders', 'blender');
                 });
                 
-                // Check if Blender gallery is empty after image load attempts
+                // Check if all Blender images failed to load
+                const IMAGE_LOAD_TIMEOUT_MS = 2000;
                 setTimeout(() => {
-                    if (blenderGallery.children.length === 0) {
+                    if (loadStats.blender.loaded === 0 && loadStats.blender.total > 0) {
                         const emptyMsg = document.createElement('div');
                         emptyMsg.className = 'empty-gallery';
-                        emptyMsg.textContent = '⚠️ No Blender renders found. This may indicate an issue with the build process.';
-                        blenderGallery.appendChild(emptyMsg);
+                        emptyMsg.textContent = '⚠️ No Blender renders loaded successfully. Check console for details.';
+                        blenderGallery.insertBefore(emptyMsg, blenderGallery.firstChild);
                     }
-                }, 2000);
+                }, IMAGE_LOAD_TIMEOUT_MS);
                 
                 // Define visual test images
                 const visualTests = [
@@ -329,19 +335,20 @@ jobs:
                 
                 // Create visual test gallery items
                 const gallery = document.getElementById('gallery');
+                loadStats.visual.total = visualTests.length;
                 visualTests.forEach(test => {
-                    createGalleryItem(gallery, test.name, test.file, test.description, 'visual_tests_output');
+                    createGalleryItem(gallery, test.name, test.file, test.description, 'visual_tests_output', 'visual');
                 });
                 
-                // Check if visual test gallery is empty after image load attempts
+                // Check if all visual test images failed to load
                 setTimeout(() => {
-                    if (gallery.children.length === 0) {
+                    if (loadStats.visual.loaded === 0 && loadStats.visual.total > 0) {
                         const emptyMsg = document.createElement('div');
                         emptyMsg.className = 'empty-gallery';
-                        emptyMsg.textContent = '⚠️ No visual test outputs found. This may indicate an issue with the build process.';
-                        gallery.appendChild(emptyMsg);
+                        emptyMsg.textContent = '⚠️ No visual test outputs loaded successfully. Check console for details.';
+                        gallery.insertBefore(emptyMsg, gallery.firstChild);
                     }
-                }, 2000);
+                }, IMAGE_LOAD_TIMEOUT_MS);
             </script>
         </body>
         </html>
