@@ -9,6 +9,7 @@ A Python library for creating 3D meshes based on a grid of cubes where each cube
 - **Solvable maze generation**: Generate mazes with parameterizable dimensions (width and height)
 - **Solution path visualization**: Display maze solutions with distinct colored cubes
 - **Flexible mesh export**: Export meshes to OBJ format
+- **Blender rendering**: Render 3D models with professional lighting using Blender
 - **Comprehensive testing**: Unit tests and visual tests with rendered output
 
 ## Installation
@@ -121,6 +122,33 @@ mesh = generator.generate_mesh(grid)
 generator.export_obj(mesh, "filename.obj")
 ```
 
+## Blender Rendering
+
+The project includes a Blender rendering script that can render OBJ files with professional lighting. This feature is used in the CI/CD pipeline to generate high-quality rendered images for the GitHub Pages site.
+
+### Using the Blender Renderer
+
+Requirements:
+- Blender 3.0+ installed on your system
+
+```bash
+# Render an OBJ file with Blender
+blender --background --python render_with_blender.py -- <input.obj> <output.png> [width] [height] [samples]
+
+# Example: Render a house model
+blender --background --python render_with_blender.py -- example_house.obj house_render.png 1920 1080 128
+
+# Example with lower quality for faster rendering
+blender --background --python render_with_blender.py -- example_tree.obj tree_render.png 800 600 32
+```
+
+The renderer features:
+- **Three-point lighting setup**: Key light, fill light, and back/rim light for professional results
+- **Vertex color support**: Automatically applies colors from OBJ file comments
+- **Transparent background**: Empty spaces are rendered as transparent
+- **Customizable resolution**: Set output image dimensions
+- **Adjustable quality**: Control render samples for quality vs speed tradeoff
+
 ## Running Tests
 
 Run all tests:
@@ -153,16 +181,18 @@ This project uses GitHub Actions to automatically run tests and deploy example o
 The CI/CD workflow (`.github/workflows/ci-and-deploy.yml`) performs the following steps:
 
 1. **Run Tests**: Executes all unit tests and visual tests using pytest
-2. **Generate Examples**: Runs `example.py` to create the house model and `example_maze.py` to create maze examples
-3. **Deploy to Pages**: Publishes the generated 3D models and visualizations to GitHub Pages
+2. **Generate Examples**: Runs example scripts to create house, tree, and maze models
+3. **Render with Blender**: Uses Blender to render the 3D models with professional lighting
+4. **Deploy to Pages**: Publishes the generated 3D models, renders, and visualizations to GitHub Pages
 
 ### Viewing the Output
 
 Once deployed, you can view the example output at: `https://arachtivix.github.io/meshmaker-1/`
 
 The GitHub Pages site includes:
+- **Blender-rendered images**: High-quality renders with professional lighting showcasing the 3D models
 - Interactive gallery of visual test outputs
-- Downloadable 3D model files (OBJ format) including house and maze examples
+- Downloadable 3D model files (OBJ format) including house, tree, and maze examples
 - Maze examples both with and without solution paths
 - Documentation about the project
 
