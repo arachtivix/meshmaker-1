@@ -26,6 +26,7 @@ def main():
     # Build the trunk (centered at x=5, z=5)
     trunk_x, trunk_z = 5, 5
     trunk_height = 7
+    trunk_width = 2  # 2x2 trunk footprint
     
     # Trunk base (2x2)
     for y in range(trunk_height):
@@ -54,8 +55,8 @@ def main():
                 # Create a circular/diamond pattern for more natural look
                 distance = abs(x - trunk_x) + abs(z - trunk_z)
                 if distance <= radius:
-                    # Don't overwrite trunk cubes
-                    if not (trunk_x - 1 <= x < trunk_x + 1 and trunk_z - 1 <= z < trunk_z + 1 and y < foliage_base_y + 1):
+                    # Don't overwrite trunk cubes (trunk is 2x2 from trunk_x-1 to trunk_x in both x and z)
+                    if not (trunk_x - 1 <= x <= trunk_x and trunk_z - 1 <= z <= trunk_z and y < foliage_base_y + 1):
                         grid.set_cube((x, y, z), occupied=True, appearance=appearance)
     
     # Add a star/tip at the very top
