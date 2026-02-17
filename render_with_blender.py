@@ -106,6 +106,9 @@ def render_obj_with_blender(obj_file, output_image, resolution=(1920, 1080), sam
     bpy.context.scene.render.resolution_y = resolution[1]
     bpy.context.scene.render.film_transparent = True  # Transparent background
     
+    # Disable denoising to avoid OpenImageDenoiser errors
+    bpy.context.scene.cycles.use_denoising = False
+    
     # Set output path
     bpy.context.scene.render.filepath = output_image
     bpy.context.scene.render.image_settings.file_format = 'PNG'
