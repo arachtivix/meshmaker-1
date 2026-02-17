@@ -47,6 +47,10 @@ jobs:
       run: |
         python example_maze.py
     
+    - name: Run tree example script
+      run: |
+        python example_tree.py
+    
     - name: Create output directory for Pages
       run: |
         mkdir -p pages_output
@@ -56,6 +60,7 @@ jobs:
         cp example_maze_solution.obj pages_output/
         cp example_maze_small.obj pages_output/
         cp example_maze_small_solution.obj pages_output/
+        cp example_tree.obj pages_output/
         # Copy any visual test outputs if they exist
         if [ -d "visual_tests_output" ]; then
           cp -r visual_tests_output pages_output/
@@ -152,7 +157,7 @@ jobs:
             <h1>🏠 MeshMaker Example Output</h1>
             
             <div class="info">
-                <p>This page shows the output from the MeshMaker example scripts, including a house structure and solvable mazes.</p>
+                <p>This page shows the output from the MeshMaker example scripts, including a house structure, a tree, and solvable mazes.</p>
                 <p>Last updated: <strong id="update-time"></strong></p>
             </div>
             
@@ -161,6 +166,10 @@ jobs:
                 <h3>House Example</h3>
                 <p>A simple house-like structure using a grid of colored cubes:</p>
                 <a href="example_house.obj" class="download-link" download>Download example_house.obj</a>
+                
+                <h3 style="margin-top: 20px;">🌲 Tree Example</h3>
+                <p>A tree structure with a brown trunk and layered green foliage:</p>
+                <a href="example_tree.obj" class="download-link" download>Download example_tree.obj</a>
                 
                 <h3 style="margin-top: 20px;">🌀 Maze Examples</h3>
                 <p>Solvable mazes with parameterizable dimensions:</p>
