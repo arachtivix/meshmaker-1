@@ -45,6 +45,7 @@ Thumbs.db
 # Output files
 output/
 visual_tests_output/
+pages_output/
 *.png
 *.obj
 *.stl
