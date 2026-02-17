@@ -209,7 +209,8 @@ jobs:
                     { name: 'Single Cube', file: 'single_cube.png', description: 'A single blue cube in 3D space' },
                     { name: 'Multiple Cubes', file: 'multiple_cubes.png', description: 'Pattern of red, green, and blue cubes' },
                     { name: 'Cross Structure', file: 'cross_structure.png', description: 'Yellow cross-shaped structure' },
-                    { name: 'Transparency', file: 'transparency.png', description: 'Cubes with different transparency levels' }
+                    { name: 'Transparency', file: 'transparency.png', description: 'Cubes with different transparency levels' },
+                    { name: 'Maze with Solution', file: 'maze_with_solution.png', description: '9x9 solvable maze with blue walls and yellow solution path' }
                 ];
                 
                 // Create gallery items
