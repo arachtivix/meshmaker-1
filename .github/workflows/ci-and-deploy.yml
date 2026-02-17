@@ -43,11 +43,19 @@ jobs:
       run: |
         python example.py
     
+    - name: Run maze example script
+      run: |
+        python example_maze.py
+    
     - name: Create output directory for Pages
       run: |
         mkdir -p pages_output
-        # Copy the generated OBJ file
+        # Copy the generated OBJ files
         cp example_house.obj pages_output/
+        cp example_maze.obj pages_output/
+        cp example_maze_solution.obj pages_output/
+        cp example_maze_small.obj pages_output/
+        cp example_maze_small_solution.obj pages_output/
         # Copy any visual test outputs if they exist
         if [ -d "visual_tests_output" ]; then
           cp -r visual_tests_output pages_output/
@@ -144,16 +152,26 @@ jobs:
             <h1>🏠 MeshMaker Example Output</h1>
             
             <div class="info">
-                <p>This page shows the output from the MeshMaker example script. The example creates a simple house-like structure using a grid of colored cubes.</p>
+                <p>This page shows the output from the MeshMaker example scripts, including a house structure and solvable mazes.</p>
                 <p>Last updated: <strong id="update-time"></strong></p>
             </div>
             
             <div class="download-section">
-                <h2>📦 Download 3D Model</h2>
-                <p>Download the generated 3D mesh file:</p>
+                <h2>📦 Download 3D Models</h2>
+                <h3>House Example</h3>
+                <p>A simple house-like structure using a grid of colored cubes:</p>
                 <a href="example_house.obj" class="download-link" download>Download example_house.obj</a>
+                
+                <h3 style="margin-top: 20px;">🌀 Maze Examples</h3>
+                <p>Solvable mazes with parameterizable dimensions:</p>
+                <a href="example_maze.obj" class="download-link" download>Download example_maze.obj (15x15)</a>
+                <a href="example_maze_solution.obj" class="download-link" download>Download example_maze_solution.obj (15x15 with solution)</a>
+                <br>
+                <a href="example_maze_small.obj" class="download-link" download>Download example_maze_small.obj (9x9)</a>
+                <a href="example_maze_small_solution.obj" class="download-link" download>Download example_maze_small_solution.obj (9x9 with solution)</a>
                 <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
-                    The OBJ file can be opened in 3D modeling software like Blender, MeshLab, or online viewers.
+                    The OBJ files can be opened in 3D modeling software like Blender, MeshLab, or online viewers.
+                    The solution path is shown in a distinct color (yellow/gold for large mazes, green for small mazes).
                 </p>
             </div>
             
@@ -171,6 +189,8 @@ jobs:
                 <ul>
                     <li>Grid-based 3D mesh generation</li>
                     <li>Parameterizable appearance (color, transparency, material)</li>
+                    <li>Solvable maze generation with customizable dimensions</li>
+                    <li>Solution path visualization</li>
                     <li>Export to OBJ format</li>
                     <li>Comprehensive testing with visual outputs</li>
                 </ul>
@@ -189,7 +209,8 @@ jobs:
                     { name: 'Single Cube', file: 'single_cube.png', description: 'A single blue cube in 3D space' },
                     { name: 'Multiple Cubes', file: 'multiple_cubes.png', description: 'Pattern of red, green, and blue cubes' },
                     { name: 'Cross Structure', file: 'cross_structure.png', description: 'Yellow cross-shaped structure' },
-                    { name: 'Transparency', file: 'transparency.png', description: 'Cubes with different transparency levels' }
+                    { name: 'Transparency', file: 'transparency.png', description: 'Cubes with different transparency levels' },
+                    { name: 'Maze with Solution', file: 'maze_with_solution.png', description: '9x9 solvable maze with blue walls and yellow solution path' }
                 ];
                 
                 // Create gallery items

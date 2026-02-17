@@ -6,6 +6,8 @@ A Python library for creating 3D meshes based on a grid of cubes where each cube
 
 - **Grid-based 3D mesh generation**: Create meshes from a 3D grid of cubes
 - **Parameterizable appearance**: Each cube can have custom color, transparency, and material properties
+- **Solvable maze generation**: Generate mazes with parameterizable dimensions (width and height)
+- **Solution path visualization**: Display maze solutions with distinct colored cubes
 - **Flexible mesh export**: Export meshes to OBJ format
 - **Comprehensive testing**: Unit tests and visual tests with rendered output
 
@@ -75,6 +77,40 @@ appearance = CubeAppearance(
 )
 ```
 
+### MazeGenerator
+
+Generates solvable mazes with parameterizable dimensions.
+
+```python
+from meshmaker import MazeGenerator, MeshGenerator, CubeAppearance
+
+# Create a maze (dimensions must be odd numbers >= 3)
+maze = MazeGenerator(
+    width=15, 
+    height=15,
+    wall_appearance=CubeAppearance(color=(0.2, 0.2, 0.8)),  # Blue walls
+    solution_appearance=CubeAppearance(color=(1.0, 1.0, 0.0))  # Yellow solution
+)
+
+# Generate the maze
+maze.generate(seed=42)  # Optional seed for reproducibility
+
+# Get solution path
+solution_path = maze.get_solution_path()  # List of (x, y) coordinates
+
+# Convert to CubeGrid
+grid = maze.to_cube_grid(include_solution=False)  # Maze without solution
+grid_with_solution = maze.to_cube_grid(include_solution=True)  # With solution
+
+# Generate and export mesh
+generator = MeshGenerator(cube_size=1.0)
+mesh = generator.generate_mesh(grid_with_solution)
+generator.export_obj(mesh, "maze_solution.obj")
+
+# Print text representation (for debugging)
+maze.print_maze(show_solution=True)
+```
+
 ### MeshGenerator
 
 Generates 3D mesh data from a CubeGrid.
@@ -97,10 +133,13 @@ Run specific test categories:
 
 ```bash
 # Unit tests only
-pytest tests/test_cube_appearance.py tests/test_cube_grid.py tests/test_mesh_generator.py
+pytest tests/test_cube_appearance.py tests/test_cube_grid.py tests/test_mesh_generator.py tests/test_maze_generator.py
 
 # Visual tests (generates output images)
 pytest tests/test_visual.py
+
+# Test maze generation specifically
+pytest tests/test_maze_generator.py -v
 ```
 
 Visual test output is saved to `visual_tests_output/` directory.
@@ -114,8 +153,8 @@ This project uses GitHub Actions to automatically run tests and deploy example o
 The CI/CD workflow (`.github/workflows/ci-and-deploy.yml`) performs the following steps:
 
 1. **Run Tests**: Executes all unit tests and visual tests using pytest
-2. **Generate Example**: Runs `example.py` to create the house model
-3. **Deploy to Pages**: Publishes the generated 3D model and visualizations to GitHub Pages
+2. **Generate Examples**: Runs `example.py` to create the house model and `example_maze.py` to create maze examples
+3. **Deploy to Pages**: Publishes the generated 3D models and visualizations to GitHub Pages
 
 ### Viewing the Output
 
@@ -123,7 +162,8 @@ Once deployed, you can view the example output at: `https://arachtivix.github.io
 
 The GitHub Pages site includes:
 - Interactive gallery of visual test outputs
-- Downloadable 3D model file (OBJ format)
+- Downloadable 3D model files (OBJ format) including house and maze examples
+- Maze examples both with and without solution paths
 - Documentation about the project
 
 ## Project Structure
@@ -135,12 +175,16 @@ meshmaker-1/
 │       ├── __init__.py
 │       ├── cube_appearance.py   # Cube appearance properties
 │       ├── cube_grid.py          # 3D grid management
+│       ├── maze_generator.py     # Maze generation
 │       └── mesh_generator.py     # Mesh generation
 ├── tests/
 │   ├── test_cube_appearance.py   # Unit tests
 │   ├── test_cube_grid.py         # Unit tests
+│   ├── test_maze_generator.py    # Maze generation tests
 │   ├── test_mesh_generator.py    # Unit tests
 │   └── test_visual.py            # Visual tests
+├── example.py                    # House example
+├── example_maze.py               # Maze examples
 ├── pyproject.toml
 └── README.md
 ```

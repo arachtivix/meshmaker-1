@@ -209,3 +209,53 @@ class TestVisualOutput:
             ax.set_xlim([vertices[:, 0].min() - 0.5, vertices[:, 0].max() + 0.5])
             ax.set_ylim([vertices[:, 1].min() - 0.5, vertices[:, 1].max() + 0.5])
             ax.set_zlim([vertices[:, 2].min() - 0.5, vertices[:, 2].max() + 0.5])
+    
+    def test_maze_visualization(self):
+        """Generate visualization of a maze with solution."""
+        from meshmaker.maze_generator import MazeGenerator
+        
+        # Create a small maze for visualization
+        maze = MazeGenerator(
+            width=9, 
+            height=9,
+            wall_appearance=CubeAppearance(color=(0.3, 0.3, 0.7)),  # Blue walls
+            solution_appearance=CubeAppearance(color=(1.0, 0.8, 0.0))  # Yellow solution
+        )
+        maze.generate(seed=42)
+        
+        # Create visualizations for maze without and with solution
+        gen = MeshGenerator(cube_size=1.0)
+        
+        # Maze without solution
+        grid_no_solution = maze.to_cube_grid(include_solution=False)
+        mesh_no_solution = gen.generate_mesh(grid_no_solution)
+        
+        fig = plt.figure(figsize=(12, 6))
+        
+        # Plot maze without solution
+        ax1 = fig.add_subplot(121, projection='3d')
+        self._plot_mesh(ax1, mesh_no_solution)
+        ax1.set_xlabel('X')
+        ax1.set_ylabel('Y')
+        ax1.set_zlabel('Z')
+        ax1.set_title('9x9 Maze (Blue Walls)')
+        ax1.view_init(elev=45, azim=45)
+        
+        # Plot maze with solution
+        grid_with_solution = maze.to_cube_grid(include_solution=True)
+        mesh_with_solution = gen.generate_mesh(grid_with_solution)
+        
+        ax2 = fig.add_subplot(122, projection='3d')
+        self._plot_mesh(ax2, mesh_with_solution)
+        ax2.set_xlabel('X')
+        ax2.set_ylabel('Y')
+        ax2.set_zlabel('Z')
+        ax2.set_title('9x9 Maze with Solution (Yellow Path)')
+        ax2.view_init(elev=45, azim=45)
+        
+        plt.tight_layout()
+        output_path = os.path.join(OUTPUT_DIR, 'maze_with_solution.png')
+        plt.savefig(output_path, dpi=150, bbox_inches='tight')
+        plt.close()
+        
+        assert os.path.exists(output_path)
