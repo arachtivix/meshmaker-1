@@ -51,6 +51,23 @@ jobs:
       run: |
         python example_tree.py
     
+    - name: Install Blender
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y blender
+    
+    - name: Render examples with Blender
+      run: |
+        mkdir -p blender_renders
+        # Render house example
+        blender --background --python render_with_blender.py -- example_house.obj blender_renders/house_render.png 1600 1200 64
+        # Render tree example
+        blender --background --python render_with_blender.py -- example_tree.obj blender_renders/tree_render.png 1600 1200 64
+        # Render maze with solution
+        blender --background --python render_with_blender.py -- example_maze_solution.obj blender_renders/maze_render.png 1600 1200 64
+        # Render small maze with solution
+        blender --background --python render_with_blender.py -- example_maze_small_solution.obj blender_renders/maze_small_render.png 1600 1200 64
+    
     - name: Create output directory for Pages
       run: |
         mkdir -p pages_output
@@ -61,6 +78,10 @@ jobs:
         cp example_maze_small.obj pages_output/
         cp example_maze_small_solution.obj pages_output/
         cp example_tree.obj pages_output/
+        # Copy Blender renders
+        if [ -d "blender_renders" ]; then
+          cp -r blender_renders pages_output/
+        fi
         # Copy any visual test outputs if they exist
         if [ -d "visual_tests_output" ]; then
           cp -r visual_tests_output pages_output/
@@ -158,7 +179,16 @@ jobs:
             
             <div class="info">
                 <p>This page shows the output from the MeshMaker example scripts, including a house structure, a tree, and solvable mazes.</p>
+                <p>Below you'll find Blender-rendered images with professional lighting, as well as downloadable 3D models and visual test outputs.</p>
                 <p>Last updated: <strong id="update-time"></strong></p>
+            </div>
+            
+            <h2>🎬 Blender Rendered Examples</h2>
+            <div class="info">
+                <p>These images were rendered using Blender with professional three-point lighting to showcase the 3D models in high quality.</p>
+            </div>
+            <div id="blender-gallery" class="gallery">
+                <!-- Blender renders will be added here by JavaScript -->
             </div>
             
             <div class="download-section">
@@ -212,6 +242,41 @@ jobs:
             <script>
                 // Set update time
                 document.getElementById('update-time').textContent = new Date().toLocaleString();
+                
+                // Define Blender rendered images
+                const blenderRenders = [
+                    { name: 'House Structure', file: 'house_render.png', description: 'House-like structure with colored cubes rendered with Blender lighting' },
+                    { name: 'Tree Structure', file: 'tree_render.png', description: 'Tree with brown trunk and green foliage rendered with professional lighting' },
+                    { name: 'Maze with Solution (15x15)', file: 'maze_render.png', description: 'Large solvable maze with blue walls and yellow solution path' },
+                    { name: 'Maze with Solution (9x9)', file: 'maze_small_render.png', description: 'Small solvable maze with red walls and green solution path' }
+                ];
+                
+                // Create Blender render gallery items
+                const blenderGallery = document.getElementById('blender-gallery');
+                blenderRenders.forEach(render => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    
+                    const img = document.createElement('img');
+                    img.src = `blender_renders/${render.file}`;
+                    img.alt = render.name;
+                    img.onerror = function() {
+                        this.parentElement.style.display = 'none';
+                    };
+                    
+                    const title = document.createElement('h3');
+                    title.textContent = render.name;
+                    
+                    const desc = document.createElement('p');
+                    desc.textContent = render.description;
+                    desc.style.fontSize = '0.9em';
+                    desc.style.color = '#666';
+                    
+                    item.appendChild(img);
+                    item.appendChild(title);
+                    item.appendChild(desc);
+                    blenderGallery.appendChild(item);
+                });
                 
                 // Define visual test images
                 const visualTests = [
