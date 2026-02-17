@@ -51,6 +51,10 @@ jobs:
       run: |
         python example_tree.py
     
+    - name: Run organic growth example script
+      run: |
+        python example_organic_growth.py
+    
     - name: Install Blender
       run: |
         sudo apt-get update
@@ -63,6 +67,8 @@ jobs:
         blender --background --python render_with_blender.py -- example_house.obj blender_renders/house_render.png 1600 1200 64
         # Render tree example
         blender --background --python render_with_blender.py -- example_tree.obj blender_renders/tree_render.png 1600 1200 64
+        # Render organic growth example
+        blender --background --python render_with_blender.py -- example_organic_growth.obj blender_renders/organic_growth_render.png 1600 1200 64
         # Render maze with solution
         blender --background --python render_with_blender.py -- example_maze_solution.obj blender_renders/maze_render.png 1600 1200 64
         # Render small maze with solution
@@ -78,6 +84,7 @@ jobs:
         cp example_maze_small.obj pages_output/
         cp example_maze_small_solution.obj pages_output/
         cp example_tree.obj pages_output/
+        cp example_organic_growth.obj pages_output/
         # Copy Blender renders
         if [ -d "blender_renders" ]; then
           cp -r blender_renders pages_output/
@@ -201,6 +208,13 @@ jobs:
                 <p>A tree structure with a brown trunk and layered green foliage:</p>
                 <a href="example_tree.obj" class="download-link" download>Download example_tree.obj</a>
                 
+                <h3 style="margin-top: 20px;">🌿 Organic Growth Example</h3>
+                <p>A randomly generated organic shape that grows by adding cubes according to specific rules:</p>
+                <a href="example_organic_growth.obj" class="download-link" download>Download example_organic_growth.obj</a>
+                <p style="margin-top: 5px; font-size: 0.85em; color: #666;">
+                    Each run generates a unique shape! The shape grows from a single cube, adding new cubes that touch only one existing cube and have no corner-diagonal neighbors. The algorithm favors more open, branching structures.
+                </p>
+                
                 <h3 style="margin-top: 20px;">🌀 Maze Examples</h3>
                 <p>Solvable mazes with parameterizable dimensions:</p>
                 <a href="example_maze.obj" class="download-link" download>Download example_maze.obj (15x15)</a>
@@ -247,6 +261,7 @@ jobs:
                 const blenderRenders = [
                     { name: 'House Structure', file: 'house_render.png', description: 'House-like structure with colored cubes rendered with Blender lighting' },
                     { name: 'Tree Structure', file: 'tree_render.png', description: 'Tree with brown trunk and green foliage rendered with professional lighting' },
+                    { name: 'Organic Growth', file: 'organic_growth_render.png', description: 'Randomly generated organic shape with branching structure and gradient coloring' },
                     { name: 'Maze with Solution (15x15)', file: 'maze_render.png', description: 'Large solvable maze with blue walls and yellow solution path' },
                     { name: 'Maze with Solution (9x9)', file: 'maze_small_render.png', description: 'Small solvable maze with red walls and green solution path' }
                 ];
