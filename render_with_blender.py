@@ -7,6 +7,11 @@ This script uses Blender's Python API to render 3D objects with proper lighting.
 import sys
 import os
 
+# Camera and lighting constants
+CAMERA_PITCH = 1.1  # Camera pitch angle in radians
+CAMERA_YAW = 0.785  # Camera yaw angle in radians (45 degrees)
+KEY_LIGHT_ANGLE = 0.5  # Sun light angle for key light
+
 
 def render_obj_with_blender(obj_file, output_image, resolution=(1920, 1080), samples=128):
     """
@@ -65,7 +70,7 @@ def render_obj_with_blender(obj_file, output_image, resolution=(1920, 1080), sam
     # Set up camera
     bpy.ops.object.camera_add(location=(max_dim * 2, -max_dim * 2, max_dim * 1.5))
     camera = bpy.context.active_object
-    camera.rotation_euler = (1.1, 0, 0.785)  # Angle the camera nicely
+    camera.rotation_euler = (CAMERA_PITCH, 0, CAMERA_YAW)  # Angle the camera nicely
     
     # Point camera at origin
     direction = camera.location
@@ -79,7 +84,7 @@ def render_obj_with_blender(obj_file, output_image, resolution=(1920, 1080), sam
     bpy.ops.object.light_add(type='SUN', location=(max_dim * 3, -max_dim * 2, max_dim * 4))
     key_light = bpy.context.active_object
     key_light.data.energy = 2.0
-    key_light.data.angle = 0.5
+    key_light.data.angle = KEY_LIGHT_ANGLE
     
     # Fill light (softer, from opposite side)
     bpy.ops.object.light_add(type='AREA', location=(-max_dim * 2, -max_dim, max_dim * 2))
@@ -199,7 +204,6 @@ def apply_vertex_colors(obj, colors):
 def main():
     """Main entry point for the script."""
     # When run through Blender, arguments after '--' are passed to the script
-    import sys
     
     # Find where script arguments start
     try:
