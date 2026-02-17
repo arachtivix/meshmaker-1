@@ -112,6 +112,27 @@ generator.export_obj(mesh, "maze_solution.obj")
 maze.print_maze(show_solution=True)
 ```
 
+## Examples
+
+### Organic Growth Example
+
+The `example_organic_growth.py` script demonstrates a procedural shape generation algorithm that creates unique, branching structures:
+
+```bash
+python example_organic_growth.py
+```
+
+This example grows shapes using the following rules:
+- Starts with a single cube
+- Adds cubes one at a time to face-adjacent positions
+- New cubes must touch exactly one existing cube
+- New cubes cannot have corner-diagonal neighbors (prevents compact, blocky shapes)
+- Uses an "openness bias" parameter to favor more branching, open structures
+- Generates different shapes each time due to randomization
+- Parameterizable by number of cubes and openness bias
+
+The algorithm produces organic, coral-like or tree-like structures with natural variation. Each cube is colored with a gradient based on its height (blue at bottom → green in middle → yellow at top).
+
 ### MeshGenerator
 
 Generates 3D mesh data from a CubeGrid.
@@ -215,6 +236,8 @@ meshmaker-1/
 │   └── test_visual.py            # Visual tests
 ├── example.py                    # House example
 ├── example_maze.py               # Maze examples
+├── example_tree.py               # Tree example
+├── example_organic_growth.py     # Organic growth example
 ├── pyproject.toml
 └── README.md
 ```
